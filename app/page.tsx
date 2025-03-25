@@ -682,11 +682,20 @@ export default function LandingPage() {
             onMouseEnter={handleCursorEnter}
             onMouseLeave={handleCursorLeave}
           >
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg">
-              <School className="h-5 w-5" />
-              <div className="absolute -inset-0.5 -z-10 animate-pulse rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 opacity-50 blur" />
-            </div>
-            <span className="text-xl font-bold">EDU21</span>
+            <Link href="/" className="flex items-center gap-2">
+              <div className="relative h-10 w-10 overflow-hidden rounded-lg">
+                <Image
+                  src="/logo.png"
+                  alt="EDU21 Logo"
+                  width={40}
+                  height={40}
+                  className="h-full w-full object-contain"
+                  priority
+                />
+                <div className="absolute -inset-0.5 -z-10 animate-pulse rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 opacity-50 blur" />
+              </div>
+              <span className="text-xl font-bold">EDU21</span>
+            </Link>
           </motion.div>
 
           <nav className="hidden md:flex gap-6">
