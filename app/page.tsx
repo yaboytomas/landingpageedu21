@@ -298,19 +298,33 @@ const DemoRequestModal = ({ isOpen, onClose }) => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [error, setError] = useState("")
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError("")
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      const response = await fetch('/api/send-demo-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al enviar la solicitud')
+      }
+      
       setIsSuccess(true)
       
       // Reset form after success
@@ -324,8 +338,13 @@ const DemoRequestModal = ({ isOpen, onClose }) => {
           correo: "",
           mensaje: ""
         })
-      }, 2000)
-    }, 1000)
+      }, 3000)
+    } catch (err) {
+      console.error('Error submitting form:', err)
+      setError(err.message || 'Error al enviar la solicitud. Intente de nuevo.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (!isOpen) return null
@@ -384,6 +403,12 @@ const DemoRequestModal = ({ isOpen, onClose }) => {
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                  {error}
+                </div>
+              )}
+              
               <div className="space-y-2">
                 <label htmlFor="nombre" className="text-sm font-medium">
                   Nombre completo
