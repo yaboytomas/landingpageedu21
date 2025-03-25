@@ -8,6 +8,7 @@ import Image from "next/image"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   School,
   BarChart,
@@ -25,20 +26,6 @@ import {
   Lock,
   Play,
 } from "lucide-react"
-import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import {
-  OrbitControls,
-  Float,
-  Environment,
-  Text,
-  PerspectiveCamera,
-  MeshDistortMaterial,
-  RoundedBox,
-  MeshWobbleMaterial,
-  MeshReflectorMaterial,
-  Cloud,
-} from "@react-three/drei"
-import * as THREE from "three"
 import { Particles } from "@/components/particles"
 import { TextReveal } from "@/components/text-reveal"
 import { MagneticButton } from "@/components/magnetic-button"
@@ -46,125 +33,14 @@ import { CursorFollower } from "@/components/cursor-follower"
 import { ScrollProgress } from "@/components/scroll-progress"
 import { useAudio } from "@/hooks/use-audio"
 import { useMobile } from "@/hooks/use-mobile"
-// Import the fallback component at the top of the file
 import { Fallback3D } from "@/components/fallback-3d"
+import dynamic from 'next/dynamic'
 
-// At the top of the file, add:
-const isBrowser = typeof window !== "undefined"
-
-// Simple error boundary component
-class ErrorBoundary extends React.Component {
-  state = { hasError: false }
-
-  static getDerivedStateFromError() {
-    return { hasError: true }
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback
-    }
-    return this.props.children
-  }
-}
-
-// 3D Models
-function FloatingLaptop(props) {
-  const { viewport } = useThree()
-  const group = useRef(null)
-
-  // Animate laptop based on mouse position
-  useFrame(({ mouse, clock }) => {
-    if (!group.current) return
-
-    const x = (mouse.x * viewport.width) / 50
-    const y = (mouse.y * viewport.height) / 50
-
-    group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, y * 0.1, 0.1)
-    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, x * 0.1, 0.1)
-
-    // Add subtle floating animation
-    group.current.position.y = Math.sin(clock.getElapsedTime() * 0.5) * 0.1
-  })
-
-  return (
-    <group ref={group} {...props}>
-      <RoundedBox args={[2, 0.1, 1.5]} radius={0.05} smoothness={4} position={[0, -0.1, 0]}>
-        <MeshReflectorMaterial color="#222" metalness={0.9} roughness={0.1} mirror={0.75} resolution={1024} />
-      </RoundedBox>
-      <RoundedBox args={[2, 1.2, 0.1]} radius={0.05} smoothness={4} position={[0, 0.6, -0.65]} rotation={[0, 0, 0]}>
-        <MeshReflectorMaterial color="#333" metalness={0.8} roughness={0.2} mirror={0.5} resolution={1024} />
-      </RoundedBox>
-      <RoundedBox args={[1.8, 1.1, 0.01]} radius={0.02} smoothness={4} position={[0, 0.6, -0.6]}>
-        <MeshWobbleMaterial
-          color="#7C3AED"
-          factor={0.05}
-          speed={2}
-          metalness={0.8}
-          roughness={0.2}
-          emissive="#7C3AED"
-          emissiveIntensity={0.5}
-        />
-      </RoundedBox>
-      <Text position={[0, 0.6, -0.59]} fontSize={0.15} color="white" anchorX="center" anchorY="middle">
-        EDU21
-      </Text>
-      <Text position={[0, 0.3, -0.59]} fontSize={0.06} color="white" anchorX="center" anchorY="middle">
-        Software Educativo
-      </Text>
-
-      {/* Add floating particles around the laptop */}
-      <Cloud
-        position={[0, 0.5, 0]}
-        speed={0.4}
-        opacity={0.2}
-        color="#8B5CF6"
-        segments={20}
-        width={3}
-        depth={1.5}
-        factor={2}
-      />
-    </group>
-  )
-}
-
-// 3D Floating Sphere
-function FloatingSphere({ position, color, speed = 1, wobble = 0.5, size = 1 }) {
-  const ref = useRef(null)
-
-  useFrame(({ clock }) => {
-    if (!ref.current) return
-
-    ref.current.position.y = Math.sin(clock.getElapsedTime() * speed) * 0.1
-    ref.current.rotation.z = clock.getElapsedTime() * 0.2
-  })
-
-  return (
-    <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
-      <mesh ref={ref} position={position}>
-        <sphereGeometry args={[size, 32, 32]} />
-        <MeshDistortMaterial color={color} speed={wobble} distort={0.3} radius={1} metalness={0.8} roughness={0.2} />
-      </mesh>
-    </Float>
-  )
-}
-
-// 3D Scene
-function Scene() {
-  return (
-    <>
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} />
-      <FloatingLaptop position={[0, 0, 0]} />
-      <FloatingSphere position={[-2, 1, -1]} color="#8B5CF6" speed={1.5} size={0.3} />
-      <FloatingSphere position={[2, -0.5, -1]} color="#EC4899" speed={1} size={0.2} />
-      <FloatingSphere position={[1.5, 1.5, -2]} color="#3B82F6" speed={2} size={0.25} />
-      <Environment preset="city" />
-      <OrbitControls enableZoom={false} autoRotate={false} enablePan={false} />
-    </>
-  )
-}
+// Use dynamic import for the 3D components to avoid hydration mismatch
+const ThreeCanvas = dynamic(() => import('../components/three-canvas'), { 
+  ssr: false,
+  loading: () => <Fallback3D />
+})
 
 // Animated Card Component with hover effects
 const AnimatedCard = ({ icon: Icon, title, description, delay = 0, items = [] }) => {
@@ -411,6 +287,218 @@ const VideoModal = ({ isOpen, onClose }) => {
   )
 }
 
+// Demo Request Modal Component
+const DemoRequestModal = ({ isOpen, onClose }) => {
+  const [formData, setFormData] = useState({
+    nombre: "",
+    escuela: "",
+    numero: "",
+    correo: "",
+    mensaje: ""
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false)
+      setIsSuccess(true)
+      
+      // Reset form after success
+      setTimeout(() => {
+        setIsSuccess(false)
+        onClose()
+        setFormData({
+          nombre: "",
+          escuela: "",
+          numero: "",
+          correo: "",
+          mensaje: ""
+        })
+      }, 2000)
+    }, 1000)
+  }
+
+  if (!isOpen) return null
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ type: "spring", damping: 20, stiffness: 300 }}
+          className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-xl dark:bg-gray-900"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-all hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          <div className="mb-6 text-center">
+            <div className="inline-flex items-center rounded-full border border-violet-200 bg-white/50 px-3 py-1 text-sm font-medium text-violet-800 backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20 dark:text-violet-300">
+              <Sparkles className="mr-1 h-3.5 w-3.5 text-violet-600" />
+              Solicitud de Demo
+            </div>
+            <h2 className="mt-2 text-2xl font-bold">Solicite una demostración personalizada</h2>
+            <p className="mt-2 text-muted-foreground">
+              Complete el formulario y nos pondremos en contacto con usted a la brevedad.
+            </p>
+          </div>
+
+          {isSuccess ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center py-6 text-center"
+            >
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-violet-500 to-purple-600">
+                <CheckCircle className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="mb-2 text-xl font-bold">¡Solicitud enviada!</h3>
+              <p className="text-muted-foreground">
+                Gracias por su interés. Nos pondremos en contacto con usted pronto.
+              </p>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="nombre" className="text-sm font-medium">
+                  Nombre completo
+                </label>
+                <Input
+                  id="nombre"
+                  name="nombre"
+                  placeholder="Ingrese su nombre completo"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="escuela" className="text-sm font-medium">
+                  Institución educativa
+                </label>
+                <Input
+                  id="escuela"
+                  name="escuela"
+                  placeholder="Nombre de su institución"
+                  value={formData.escuela}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label htmlFor="numero" className="text-sm font-medium">
+                    Número de teléfono
+                  </label>
+                  <Input
+                    id="numero"
+                    name="numero"
+                    type="tel"
+                    placeholder="+56 9 1234 5678"
+                    value={formData.numero}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="correo" className="text-sm font-medium">
+                    Correo electrónico
+                  </label>
+                  <Input
+                    id="correo"
+                    name="correo"
+                    type="email"
+                    placeholder="ejemplo@dominio.com"
+                    value={formData.correo}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="mensaje" className="text-sm font-medium">
+                  Mensaje (opcional)
+                </label>
+                <Textarea
+                  id="mensaje"
+                  name="mensaje"
+                  placeholder="Cuéntenos sobre sus necesidades específicas"
+                  rows={4}
+                  value={formData.mensaje}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-violet-500 to-purple-600 text-white transition-all hover:from-violet-600 hover:to-purple-700"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="h-4 w-4 animate-spin"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Enviando...
+                  </div>
+                ) : (
+                  "Enviar solicitud"
+                )}
+              </Button>
+            </form>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
 // Feature Highlight Component
 const FeatureHighlight = ({ icon: Icon, title, description, index }) => {
   return (
@@ -497,6 +585,7 @@ const AnimatedCounter = ({ value, title, icon: Icon, delay = 0 }) => {
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [videoOpen, setVideoOpen] = useState(false)
+  const [demoModalOpen, setDemoModalOpen] = useState(false)
   const [cursorVariant, setCursorVariant] = useState("default")
   const { scrollYProgress } = useScroll()
   const heroRef = useRef(null)
@@ -528,6 +617,8 @@ export default function LandingPage() {
   const handleCursorLeave = () => setCursorVariant("default")
   const handleCursorButton = () => setCursorVariant("button")
   const handleCursorButtonLeave = () => setCursorVariant("default")
+  
+  const openDemoModal = () => setDemoModalOpen(true)
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-white to-violet-50 dark:from-gray-950 dark:to-black">
@@ -549,6 +640,9 @@ export default function LandingPage() {
 
       {/* Video Modal */}
       <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} />
+      
+      {/* Demo Request Modal */}
+      <DemoRequestModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
 
       {/* Header */}
       <header
@@ -571,7 +665,7 @@ export default function LandingPage() {
           </motion.div>
 
           <nav className="hidden md:flex gap-6">
-            {["Características", "Beneficios", "Testimonios", "Contacto"].map((item, index) => (
+            {["Características", "Beneficios", "Testimonios"].map((item, index) => (
               <motion.div
                 key={item}
                 initial={{ opacity: 0, y: -10 }}
@@ -598,7 +692,7 @@ export default function LandingPage() {
             onMouseEnter={handleCursorButton}
             onMouseLeave={handleCursorButtonLeave}
           >
-            <AnimatedButton size="sm">
+            <AnimatedButton size="sm" onClick={openDemoModal}>
               Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
             </AnimatedButton>
           </motion.div>
@@ -656,7 +750,7 @@ export default function LandingPage() {
                   className="flex flex-col gap-3 sm:flex-row"
                 >
                   <div onMouseEnter={handleCursorButton} onMouseLeave={handleCursorButtonLeave}>
-                    <AnimatedButton size="lg" className="group">
+                    <AnimatedButton size="lg" className="group" onClick={openDemoModal}>
                       Solicitar Demo
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </AnimatedButton>
@@ -711,18 +805,8 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.5 }}
                   className="relative h-[400px] w-full max-w-[600px] lg:h-full"
                 >
-                  // Then find the 3D canvas section in the hero and update it to:
                   <div className="absolute inset-0 z-10 rounded-2xl border border-violet-200 bg-white/30 shadow-xl backdrop-blur-sm transition-all duration-300 dark:border-violet-800/30 dark:bg-black/20">
-                    {isBrowser && (
-                      <Suspense fallback={<Fallback3D />}>
-                        <ErrorBoundary fallback={<Fallback3D />}>
-                          <Canvas>
-                            <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-                            <Scene />
-                          </Canvas>
-                        </ErrorBoundary>
-                      </Suspense>
-                    )}
+                    <ThreeCanvas />
                   </div>
                   <div className="absolute -bottom-6 -right-6 z-0 h-full w-full rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 opacity-20 blur-xl" />
                 </motion.div>
@@ -1092,7 +1176,7 @@ export default function LandingPage() {
                   onMouseEnter={handleCursorButton}
                   onMouseLeave={handleCursorButtonLeave}
                 >
-                  <AnimatedButton size="lg" className="mt-4">
+                  <AnimatedButton size="lg" className="mt-4" onClick={openDemoModal}>
                     Descubrir más beneficios
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </AnimatedButton>
@@ -1172,17 +1256,17 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
-              className="flex flex-col items-center justify-center space-y-4 text-center text-white"
+              className="flex flex-col items-center justify-center space-y-4 text-center"
             >
-              <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-medium backdrop-blur-sm">
-                <Sparkles className="mr-1 h-3.5 w-3.5" />
+              <div className="inline-flex items-center rounded-full border border-violet-200 bg-white/50 px-3 py-1 text-sm font-medium text-violet-800 backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20 dark:text-violet-300">
+                <Sparkles className="mr-1 h-3.5 w-3.5 text-violet-600" />
                 Comience Hoy Mismo
               </div>
 
               <TextReveal>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight lg:text-5xl/tight">
                   Transforme su institución educativa{" "}
-                  <span className="underline decoration-wavy decoration-white/50 underline-offset-4">hoy</span>
+                  <span className="underline decoration-wavy decoration-violet-500/50 underline-offset-4">hoy</span>
                 </h2>
               </TextReveal>
 
@@ -1190,7 +1274,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="mx-auto max-w-[600px] md:text-xl/relaxed"
+                className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed"
               >
                 Solicite una demostración personalizada y descubra cómo nuestras soluciones pueden adaptarse a sus
                 necesidades específicas.
@@ -1203,169 +1287,25 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 className="mx-auto mt-6 w-full max-w-md space-y-2"
               >
-                <form className="flex flex-col gap-2 sm:flex-row">
-                  <Input
-                    type="email"
-                    placeholder="Ingrese su correo electrónico"
-                    className="h-12 border-white/20 bg-white/10 text-white placeholder:text-white/60 focus-visible:ring-white/30"
-                  />
-                  <Button variant="secondary" size="lg" className="h-12 bg-white text-violet-600 hover:bg-white/90">
+                <div className="flex justify-center">
+                  <Button 
+                    variant="default" 
+                    size="lg" 
+                    className="h-12 w-60 bg-gradient-to-r from-violet-500 to-purple-600 text-white hover:from-violet-600 hover:to-purple-700"
+                    onClick={openDemoModal}
+                  >
                     Solicitar Demo
                   </Button>
-                </form>
-                <p className="text-xs text-white/70">
-                  Al enviar este formulario, acepta nuestros{" "}
-                  <Link href="#" className="underline underline-offset-2 hover:text-white">
+                </div>
+                <p className="text-xs text-center text-muted-foreground">
+                  Al solicitar una demo, acepta nuestros{" "}
+                  <Link href="#" className="underline underline-offset-2 hover:text-violet-600">
                     Términos y Condiciones
                   </Link>
                   .
                 </p>
               </motion.div>
             </motion.div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section id="contacto" className="relative py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-                className="flex flex-col justify-center space-y-4"
-              >
-                <div className="space-y-2">
-                  <div className="inline-flex items-center rounded-full border border-violet-200 bg-white/50 px-3 py-1 text-sm font-medium text-violet-800 backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20 dark:text-violet-300">
-                    <Sparkles className="mr-1 h-3.5 w-3.5 text-violet-600" />
-                    Contacto
-                  </div>
-
-                  <TextReveal>
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                      Estamos aquí para <GradientText animate={true}>ayudarle</GradientText>
-                    </h2>
-                  </TextReveal>
-
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                    Nuestro equipo está listo para responder a sus preguntas y ayudarle a encontrar la solución perfecta
-                    para su institución.
-                  </p>
-                </div>
-
-                <div className="mt-8 space-y-6">
-                  {[
-                    {
-                      icon: "phone",
-                      title: "Teléfono",
-                      content: "+56 2 2123 4567",
-                      href: "tel:+56221234567",
-                    },
-                    {
-                      icon: "mail",
-                      title: "Correo Electrónico",
-                      content: "contacto@edu21.cl",
-                      href: "mailto:contacto@edu21.cl",
-                    },
-                    {
-                      icon: "map-pin",
-                      title: "Dirección",
-                      content: "Av. Providencia 1234, Santiago, Chile",
-                      href: "https://maps.google.com",
-                    },
-                  ].map((item, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="group flex items-start gap-4"
-                      onMouseEnter={handleCursorEnter}
-                      onMouseLeave={handleCursorLeave}
-                    >
-                      <motion.div
-                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/20 transition-all duration-300 group-hover:scale-110"
-                        whileHover={{ rotate: [0, -5, 5, -5, 0] }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          {item.icon === "phone" && (
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.11-1.11a2 2 0 0 1 2.12-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                          )}
-                          {item.icon === "mail" && (
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM20 6l-8 5-8-5h16z" />
-                          )}
-                          {item.icon === "map-pin" && (
-                            <path d="M3 7v11a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zM16 7v11a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-3a1 1 0 0 0-1 1zM9.004 8.464 9 9 7 10.17V18a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-7.83L11 9c-.006-.005-.013-.009-.019-.014A2.001 2.001 0 0 0 9.004 8.464zM12 13.5l-3-2.25V12l3 2.25 3-2.25v-.25L12 13.5z" />
-                          )}
-                        </svg>
-                      </motion.div>
-                      <div className="space-y-1">
-                        <h3 className="text-xl font-bold">{item.title}</h3>
-                        <p className="text-muted-foreground">
-                          <Link href={item.href} className="underline underline-offset-2 hover:text-violet-600">
-                            {item.content}
-                          </Link>
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-                className="relative overflow-hidden rounded-2xl border border-violet-200 bg-white/80 shadow-xl backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20"
-                onMouseEnter={handleCursorEnter}
-                onMouseLeave={handleCursorLeave}
-              >
-                <div className="absolute -left-16 -top-16 h-64 w-64 rounded-full bg-gradient-to-br from-violet-400/30 to-purple-400/30 blur-3xl" />
-                <div className="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-gradient-to-br from-blue-400/30 to-cyan-400/30 blur-3xl" />
-
-                <div className="relative aspect-video overflow-hidden rounded-t-2xl">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.899297244486!2d-70.6094469234262!3d-33.43722998704137!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c58654ca9dfd%3A0x64a3c93144992f74!2sAv.%20Providencia%201234%2C%20Providencia%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1ses-419!2scl!4v1686942318741!5m2!1ses-419!2scl"
-                    width="800"
-                    height="600"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="h-full w-full"
-                  ></iframe>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  <div className="absolute bottom-4 left-4 rounded-lg bg-white/90 px-3 py-1 text-sm font-medium text-violet-800 backdrop-blur-sm dark:bg-black/50 dark:text-violet-300">
-                    Ubicación
-                  </div>
-                </div>
-
-                <div className="relative p-6">
-                  <div className="flex items-center gap-2">
-                    <div className="h-1 w-12 rounded-full bg-gradient-to-r from-violet-500 to-purple-600" />
-                    <span className="text-sm font-medium text-violet-600 dark:text-violet-400">Visítenos</span>
-                  </div>
-                  <h3 className="mt-2 text-2xl font-bold">Encuéntrenos en Santiago</h3>
-                  <p className="mt-2 text-muted-foreground">
-                    Estamos ubicados en el corazón de Providencia, listos para atenderle.
-                  </p>
-                </div>
-              </motion.div>
-            </div>
           </div>
         </section>
       </main>
