@@ -52,8 +52,9 @@ export async function POST(request) {
       // Send email to each recipient
       const mailPromises = recipients.map(recipient => {
         const mailOptions = {
-          from: process.env.EMAIL_FROM,
+          from: `"EDU21 Solicitud de Demo" <${process.env.EMAIL_FROM}>`,
           to: recipient,
+          replyTo: 'landing-page-leads@edu21.cl',
           subject: `Nueva solicitud de demo - ${nombre} de ${escuela}`,
           html: emailHtml,
         };
