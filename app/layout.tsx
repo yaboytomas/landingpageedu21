@@ -1,17 +1,30 @@
-import type React from "react"
-import "@/app/globals.css"
+import "./globals.css"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata = {
-  title: "EDU21 - Soluciones de Software para Instituciones Educativas",
-  description:
-    "Transforme la gestión de su institución educativa con nuestras soluciones de software integrales. Intranet escolar, gestión académica y administrativa.",
-  keywords:
-    "software educativo, intranet escolar, gestión académica, administración escolar, plataforma educativa, software para colegios",
-    generator: 'v0.dev'
+export const metadata: Metadata = {
+  title: "EDU21 - Software Educativo de Última Generación",
+  description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
+  keywords: "software educativo, intranet escolar, gestión académica, administración escolar, plataforma educativa",
+  generator: 'Next.js',
+  openGraph: {
+    title: "EDU21 - Software Educativo de Última Generación",
+    description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
+    url: "https://edu21.vercel.app",
+    siteName: "EDU21",
+    locale: "es_ES",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "EDU21 - Software Educativo de Última Generación",
+    description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
+  }
 }
 
 export default function RootLayout({
@@ -29,13 +42,15 @@ export default function RootLayout({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
-        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
