@@ -1178,7 +1178,7 @@ export default function LandingPage() {
 
                 <div className="relative aspect-video overflow-hidden rounded-t-2xl">
                   <Image
-                    src="/placeholder.svg?height=600&width=800"
+                    src="/xp.jpg"
                     alt="Estudiantes utilizando la plataforma EDU21"
                     width={800}
                     height={600}
