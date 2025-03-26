@@ -40,21 +40,15 @@ import { ThemeToggle } from "@/components/theme-toggle"
 
 // Laptop image component
 const LaptopImage = () => (
-  <div className="flex h-full w-full items-center justify-center">
-    <div className="relative w-full max-w-md">
+  <div className="relative h-full w-full flex items-center justify-center overflow-hidden">
+    <div className="relative h-[90%] w-[90%] overflow-hidden rounded-lg">
       <Image 
-        src="/placeholder.svg?height=400&width=600&text=LAPTOP" 
+        src="/hero.jpg" 
         alt="EDU21 Software Educativo"
-        width={600}
-        height={400}
-        className="w-full h-auto object-contain"
+        fill
+        className="object-cover object-center"
+        priority
       />
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <div className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-          EDU21
-        </div>
-        <p className="text-muted-foreground mt-2">Software Educativo de Última Generación</p>
-      </div>
     </div>
   </div>
 );
@@ -733,25 +727,29 @@ export default function LandingPage() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex gap-6">
-            {["Características", "Beneficios", "Testimonios"].map((item, index) => (
+            {[
+              { id: "características", label: "Características" },
+              { id: "beneficios", label: "Beneficios" },
+              { id: "testimonios", label: "Testimonios" }
+            ].map((item, index) => (
               <motion.div
-                key={item}
+                key={item.id}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
                 <Link
-                  href={`#${item.toLowerCase()}`}
+                  href={`#${item.id}`}
                   className="group relative text-sm font-medium transition-colors hover:text-violet-600"
                   onClick={(e) => {
                     e.preventDefault();
-                    const section = document.getElementById(item.toLowerCase());
+                    const section = document.getElementById(item.id);
                     if (section) {
                       section.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
                 >
-                  {item}
+                  {item.label}
                   <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-purple-600 transition-all duration-300 group-hover:w-full" />
                 </Link>
               </motion.div>
@@ -795,21 +793,27 @@ export default function LandingPage() {
               className="md:hidden bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm shadow-md overflow-hidden"
             >
               <div className="container py-4 px-4 flex flex-col space-y-4">
-                {["Características", "Beneficios", "Testimonios"].map((item) => (
+                {[
+                  { id: "características", label: "Características" },
+                  { id: "beneficios", label: "Beneficios" },
+                  { id: "testimonios", label: "Testimonios" }
+                ].map((item) => (
                   <Link
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
+                    key={item.id}
+                    href={`#${item.id}`}
                     className="text-base font-medium py-2 hover:text-violet-600 transition-colors"
                     onClick={(e) => {
                       e.preventDefault();
-                      const section = document.getElementById(item.toLowerCase());
+                      const section = document.getElementById(item.id);
                       if (section) {
-                        section.scrollIntoView({ behavior: 'smooth' });
                         setMobileMenuOpen(false);
+                        setTimeout(() => {
+                          section.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
                       }
                     }}
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 ))}
                 <div className="pt-2">
@@ -915,14 +919,14 @@ export default function LandingPage() {
                 </motion.div>
               </motion.div>
 
-              <div className="relative flex items-center justify-center lg:h-[600px]">
+              <div className="relative flex items-center justify-center h-full lg:h-[650px]">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
-                  className="relative h-[400px] w-full max-w-[600px] lg:h-full"
+                  className="relative h-[500px] w-full max-w-[600px] lg:h-[600px]"
                 >
-                  <div className="absolute inset-0 z-10 rounded-2xl border border-violet-200 bg-white/30 shadow-xl backdrop-blur-sm transition-all duration-300 dark:border-violet-800/30 dark:bg-black/20">
+                  <div className="absolute inset-0 z-10 rounded-2xl border border-violet-200 bg-white/10 shadow-xl backdrop-blur-sm transition-all duration-300 dark:border-violet-800/30 dark:bg-black/10 overflow-hidden">
                     <LaptopImage />
                   </div>
                   <div className="absolute -bottom-6 -right-6 z-0 h-full w-full rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 opacity-20 blur-xl" />
@@ -1111,22 +1115,24 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="relative aspect-video w-full overflow-hidden rounded-2xl border border-violet-200 bg-white/80 shadow-xl backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20"
+                className="relative aspect-video w-full overflow-hidden rounded-2xl border border-violet-200 bg-white/80 shadow-xl backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20 cursor-pointer group"
+                onClick={openDemoModal}
               >
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 z-10 transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
+                
+                <div className="absolute inset-0 bg-violet-600/0 group-hover:bg-violet-600/10 transition-all duration-500 z-0" />
+                
                 <Image
-                  src="/placeholder.svg?height=600&width=1200"
-                  alt="Demo de la plataforma EDU21"
-                  width={1200}
-                  height={600}
-                  className="h-full w-full object-cover"
+                  src="/lukas.png"
+                  alt="EDU21 Software Educativo"
+                  fill
+                  className="object-cover object-center transition-all duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="bg-white/80 dark:bg-black/50 p-6 rounded-lg backdrop-blur-sm text-center">
-                    <h3 className="text-xl font-bold mb-2">Plataforma Educativa Intuitiva</h3>
-                    <p>Explora nuestra solución diseñada para instituciones educativas modernas</p>
-                  </div>
+                
+                <div className="absolute bottom-0 left-0 right-0 p-6 z-20 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  <h3 className="text-xl font-bold text-white mb-2">Solicitar Demostración</h3>
+                  <p className="text-white/90">Haga clic para programar una demostración personalizada</p>
                 </div>
               </motion.div>
 
@@ -1404,6 +1410,7 @@ export default function LandingPage() {
                   </Button>
                 </div>
                 <p className="text-xs text-center text-muted-foreground">
+                  
                   Al solicitar una demo, acepta nuestros{" "}
                   <Link href="#" className="underline underline-offset-2 hover:text-violet-600">
                     Términos y Condiciones
@@ -1423,4 +1430,6 @@ export default function LandingPage() {
     </div>
   )
 }
+
+
 
