@@ -33,14 +33,27 @@ import { CursorFollower } from "@/components/cursor-follower"
 import { ScrollProgress } from "@/components/scroll-progress"
 import { useAudio } from "@/hooks/use-audio"
 import { useMobile } from "@/hooks/use-mobile"
-import { Fallback3D } from "@/components/fallback-3d"
-import dynamic from 'next/dynamic'
 
-// Use dynamic import for the 3D components to avoid hydration mismatch
-const ThreeCanvas = dynamic(() => import('../components/three-canvas'), { 
-  ssr: false,
-  loading: () => <Fallback3D />
-})
+// Laptop image component
+const LaptopImage = () => (
+  <div className="flex h-full w-full items-center justify-center">
+    <div className="relative w-full max-w-md">
+      <Image 
+        src="/placeholder.svg?height=400&width=600&text=LAPTOP" 
+        alt="EDU21 Software Educativo"
+        width={600}
+        height={400}
+        className="w-full h-auto object-contain"
+      />
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <div className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+          EDU21
+        </div>
+        <p className="text-muted-foreground mt-2">Software Educativo de Última Generación</p>
+      </div>
+    </div>
+  </div>
+);
 
 // Animated Card Component with hover effects
 const AnimatedCard = ({ icon: Icon, title, description, delay = 0, items = [] }) => {
@@ -611,7 +624,6 @@ export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [videoOpen, setVideoOpen] = useState(false)
   const [demoModalOpen, setDemoModalOpen] = useState(false)
-  const [cursorVariant, setCursorVariant] = useState("default")
   const { scrollYProgress } = useScroll()
   const heroRef = useRef(null)
   const featuresRef = useRef(null)
@@ -637,19 +649,10 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Cursor functions
-  const handleCursorEnter = () => setCursorVariant("hover")
-  const handleCursorLeave = () => setCursorVariant("default")
-  const handleCursorButton = () => setCursorVariant("button")
-  const handleCursorButtonLeave = () => setCursorVariant("default")
-  
   const openDemoModal = () => setDemoModalOpen(true)
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-white to-violet-50 dark:from-gray-950 dark:to-black">
-      {/* Custom Cursor */}
-      {!isMobile && <CursorFollower variant={cursorVariant} />}
-
       {/* Scroll Progress Indicator */}
       <ScrollProgress />
 
@@ -679,8 +682,6 @@ export default function LandingPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className="flex items-center gap-2"
-            onMouseEnter={handleCursorEnter}
-            onMouseLeave={handleCursorLeave}
           >
             <Link href="/" className="flex items-center">
               <Image
@@ -701,8 +702,6 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                onMouseEnter={handleCursorEnter}
-                onMouseLeave={handleCursorLeave}
               >
                 <Link
                   href={`#${item.toLowerCase()}`}
@@ -719,8 +718,6 @@ export default function LandingPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            onMouseEnter={handleCursorButton}
-            onMouseLeave={handleCursorButtonLeave}
           >
             <AnimatedButton size="sm" onClick={openDemoModal}>
               Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
@@ -743,7 +740,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="flex flex-col justify-center space-y-4"
+                className="flex flex-col justify-center space-y-4 mx-auto text-center lg:text-left lg:mx-0"
               >
                 <div className="space-y-2">
                   <motion.div
@@ -766,7 +763,7 @@ export default function LandingPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.8 }}
-                    className="max-w-[600px] text-lg text-muted-foreground md:text-xl"
+                    className="max-w-[600px] text-lg text-muted-foreground md:text-xl mx-auto lg:mx-0"
                   >
                     Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.
                     Optimice procesos, mejore la comunicación y eleve la experiencia educativa.
@@ -777,28 +774,13 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
-                  className="flex flex-col gap-3 sm:flex-row"
+                  className="flex flex-col gap-3 sm:flex-row justify-center lg:justify-start"
                 >
-                  <div onMouseEnter={handleCursorButton} onMouseLeave={handleCursorButtonLeave}>
+                  <div>
                     <AnimatedButton size="lg" className="group" onClick={openDemoModal}>
                       Solicitar Demo
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </AnimatedButton>
-                  </div>
-
-                  <div onMouseEnter={handleCursorButton} onMouseLeave={handleCursorButtonLeave}>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="group relative overflow-hidden border-violet-200 transition-all duration-300 hover:border-violet-300 hover:bg-violet-50 dark:border-violet-800/30 dark:hover:border-violet-700/50 dark:hover:bg-violet-900/20"
-                      onClick={() => setVideoOpen(true)}
-                    >
-                      <span className="relative z-10 flex items-center">
-                        <Play className="mr-2 h-4 w-4" />
-                        Ver Video
-                      </span>
-                      <span className="absolute inset-0 -z-10 bg-gradient-to-r from-violet-100 to-purple-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-violet-900/20 dark:to-purple-900/20" />
-                    </Button>
                   </div>
                 </motion.div>
 
@@ -806,7 +788,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.8 }}
-                  className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
+                  className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground justify-center lg:justify-start"
                 >
                   {[
                     { icon: Zap, text: "Implementación rápida" },
@@ -836,7 +818,7 @@ export default function LandingPage() {
                   className="relative h-[400px] w-full max-w-[600px] lg:h-full"
                 >
                   <div className="absolute inset-0 z-10 rounded-2xl border border-violet-200 bg-white/30 shadow-xl backdrop-blur-sm transition-all duration-300 dark:border-violet-800/30 dark:bg-black/20">
-                    <ThreeCanvas />
+                    <LaptopImage />
                   </div>
                   <div className="absolute -bottom-6 -right-6 z-0 h-full w-full rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 opacity-20 blur-xl" />
                 </motion.div>
@@ -882,8 +864,6 @@ export default function LandingPage() {
                     transition={{ duration: 0.5, delay: i * 0.1 }}
                     viewport={{ once: true }}
                     className="group relative"
-                    onMouseEnter={handleCursorEnter}
-                    onMouseLeave={handleCursorLeave}
                   >
                     <div className="relative flex h-16 items-center justify-center overflow-hidden rounded-lg bg-white/50 p-4 backdrop-blur-sm transition-all duration-300 hover:bg-white/80 dark:bg-gray-900/50 dark:hover:bg-gray-900/80">
                       <Image
@@ -1026,28 +1006,21 @@ export default function LandingPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
                 className="relative aspect-video w-full overflow-hidden rounded-2xl border border-violet-200 bg-white/80 shadow-xl backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20"
-                onMouseEnter={handleCursorEnter}
-                onMouseLeave={handleCursorLeave}
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                    className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg"
-                    onClick={() => setVideoOpen(true)}
-                  >
-                    <Play className="h-8 w-8" />
-                  </motion.button>
-                </div>
                 <Image
                   src="/placeholder.svg?height=600&width=1200"
                   alt="Demo de la plataforma EDU21"
                   width={1200}
                   height={600}
-                  className="h-full w-full object-cover opacity-50"
+                  className="h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-white/80 dark:bg-black/50 p-6 rounded-lg backdrop-blur-sm text-center">
+                    <h3 className="text-xl font-bold mb-2">Plataforma Educativa Intuitiva</h3>
+                    <p>Explora nuestra solución diseñada para instituciones educativas modernas</p>
+                  </div>
+                </div>
               </motion.div>
 
               <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -1086,8 +1059,6 @@ export default function LandingPage() {
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
                 className="relative overflow-hidden rounded-2xl border border-violet-200 bg-white/80 shadow-xl backdrop-blur-sm dark:border-violet-800/30 dark:bg-black/20"
-                onMouseEnter={handleCursorEnter}
-                onMouseLeave={handleCursorLeave}
               >
                 <div className="absolute -left-16 -top-16 h-64 w-64 rounded-full bg-gradient-to-br from-violet-400/30 to-purple-400/30 blur-3xl" />
                 <div className="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-gradient-to-br from-blue-400/30 to-cyan-400/30 blur-3xl" />
@@ -1180,8 +1151,6 @@ export default function LandingPage() {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       viewport={{ once: true }}
                       className="group flex items-start gap-4"
-                      onMouseEnter={handleCursorEnter}
-                      onMouseLeave={handleCursorLeave}
                     >
                       <motion.div
                         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/20 transition-all duration-300 group-hover:scale-110"
@@ -1203,8 +1172,7 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                   viewport={{ once: true }}
-                  onMouseEnter={handleCursorButton}
-                  onMouseLeave={handleCursorButtonLeave}
+                  className="flex justify-center"
                 >
                   <AnimatedButton size="lg" className="mt-4" onClick={openDemoModal}>
                     Descubrir más beneficios
