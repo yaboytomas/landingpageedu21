@@ -874,13 +874,13 @@ export default function LandingPage() {
                     viewport={{ once: true }}
                     className="group relative"
                   >
-                    <div className="relative flex h-16 items-center justify-center overflow-hidden rounded-lg bg-white/50 p-4 backdrop-blur-sm transition-all duration-300 hover:bg-white/80 dark:bg-gray-900/50 dark:hover:bg-gray-900/80">
+                    <div className="relative flex h-20 items-center justify-center overflow-hidden rounded-lg bg-white/50 p-4 backdrop-blur-sm transition-all duration-300 hover:bg-white/80 dark:bg-gray-900/50 dark:hover:bg-gray-900/80">
                       <Image
-                        src={`/placeholder.svg?height=60&width=180&text=LOGO+${i}`}
-                        alt={`Logo de cliente ${i}`}
+                        src={`/school${i}.jpg`}
+                        alt={`Logo de institución educativa ${i}`}
                         width={180}
                         height={60}
-                        className="h-8 w-auto object-contain transition-all duration-300 group-hover:scale-110"
+                        className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-110"
                       />
                     </div>
                     <div className="absolute -inset-px -z-10 rounded-lg bg-gradient-to-r from-violet-500 to-purple-600 opacity-0 blur-sm transition-all duration-300 group-hover:opacity-70" />
