@@ -85,8 +85,8 @@ const AnimatedCard = ({ icon: Icon, title, description, delay = 0, items = [] })
         </motion.div>
 
         <motion.h3
-          className="mb-2 text-xl font-bold dark:text-white"
-          animate={{ color: hovered ? "#8B5CF6" : "#000000" }}
+          className="mb-2 text-xl font-bold text-black dark:text-white"
+          animate={{ color: hovered ? "#8B5CF6" : "" }}
           transition={{ duration: 0.3 }}
         >
           {title}
