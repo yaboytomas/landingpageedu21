@@ -34,7 +34,6 @@ import { TextReveal } from "@/components/text-reveal"
 import { MagneticButton } from "@/components/magnetic-button"
 import { CursorFollower } from "@/components/cursor-follower"
 import { ScrollProgress } from "@/components/scroll-progress"
-import { useAudio } from "@/hooks/use-audio"
 import { useMobile } from "@/hooks/use-mobile"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -56,7 +55,6 @@ const LaptopImage = () => (
 // Animated Card Component with hover effects
 const AnimatedCard = ({ icon: Icon, title, description, delay = 0, items = [] }) => {
   const [hovered, setHovered] = useState(false)
-  const { playHover } = useAudio()
 
   return (
     <motion.div
@@ -67,7 +65,6 @@ const AnimatedCard = ({ icon: Icon, title, description, delay = 0, items = [] })
       className="group relative overflow-hidden rounded-xl border border-violet-200 bg-white p-6 shadow-lg transition-all duration-500 hover:shadow-xl hover:shadow-violet-200/20 dark:border-violet-800/30 dark:bg-black/20 dark:backdrop-blur-lg"
       onHoverStart={() => {
         setHovered(true)
-        playHover()
       }}
       onHoverEnd={() => setHovered(false)}
     >
@@ -139,7 +136,6 @@ const AnimatedCard = ({ icon: Icon, title, description, delay = 0, items = [] })
 // Testimonial Card Component with advanced effects
 const TestimonialCard = ({ name, role, content, initials, delay = 0 }) => {
   const [hovered, setHovered] = useState(false)
-  const { playPop } = useAudio()
 
   return (
     <motion.div
@@ -150,7 +146,6 @@ const TestimonialCard = ({ name, role, content, initials, delay = 0 }) => {
       className="group relative overflow-hidden rounded-xl border border-violet-200 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-200/20 dark:border-violet-800/30 dark:bg-black/20 dark:backdrop-blur-lg"
       onHoverStart={() => {
         setHovered(true)
-        playPop()
       }}
       onHoverEnd={() => setHovered(false)}
     >
@@ -218,10 +213,8 @@ const TestimonialCard = ({ name, role, content, initials, delay = 0 }) => {
 
 // Magnetic Button Component
 const AnimatedButton = ({ children, variant = "default", className = "", ...props }) => {
-  const { playClick } = useAudio()
-
   return (
-    <MagneticButton onClick={playClick}>
+    <MagneticButton>
       <Button variant={variant} className={`group relative overflow-hidden ${className}`} {...props}>
         <span className="relative z-10">{children}</span>
         <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-violet-600 to-purple-600 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
@@ -628,16 +621,10 @@ export default function LandingPage() {
   const heroRef = useRef(null)
   const featuresRef = useRef(null)
   const isMobile = useMobile()
-  const { initAudio } = useAudio()
 
   // Parallax effect for hero section
   const y = useTransform(scrollYProgress, [0, 0.5], [0, -150])
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
-
-  // Initialize audio
-  useEffect(() => {
-    initAudio()
-  }, [initAudio])
 
   // Handle scroll events
   useEffect(() => {
