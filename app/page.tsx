@@ -25,6 +25,9 @@ import {
   Database,
   Lock,
   Play,
+  ArrowUp,
+  Menu,
+  X,
 } from "lucide-react"
 import { Particles } from "@/components/particles"
 import { TextReveal } from "@/components/text-reveal"
@@ -625,6 +628,8 @@ export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [videoOpen, setVideoOpen] = useState(false)
   const [demoModalOpen, setDemoModalOpen] = useState(false)
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { scrollYProgress } = useScroll()
   const heroRef = useRef(null)
   const featuresRef = useRef(null)
@@ -644,18 +649,43 @@ export default function LandingPage() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
+      setShowBackToTop(window.scrollY > 500)
     }
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+
   const openDemoModal = () => setDemoModalOpen(true)
+
+  const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-white to-violet-50 dark:from-gray-950 dark:to-black">
       {/* Scroll Progress Indicator */}
       <ScrollProgress />
+      
+      {/* Back to Top Button */}
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.button
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg transition-all hover:scale-110"
+            onClick={scrollToTop}
+          >
+            <ArrowUp className="h-6 w-6" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Background Elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -701,6 +731,7 @@ export default function LandingPage() {
             </Link>
           </motion.div>
 
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex gap-6">
             {["Características", "Beneficios", "Testimonios"].map((item, index) => (
               <motion.div
@@ -712,6 +743,13 @@ export default function LandingPage() {
                 <Link
                   href={`#${item.toLowerCase()}`}
                   className="group relative text-sm font-medium transition-colors hover:text-violet-600"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const section = document.getElementById(item.toLowerCase());
+                    if (section) {
+                      section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                 >
                   {item}
                   <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-purple-600 transition-all duration-300 group-hover:w-full" />
@@ -726,13 +764,71 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
+              className="hidden sm:block"
             >
               <AnimatedButton size="sm" onClick={openDemoModal}>
                 Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
               </AnimatedButton>
             </motion.div>
+            
+            {/* Mobile Menu Button */}
+            <button 
+              className="flex md:hidden p-2"
+              onClick={toggleMobileMenu}
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
+        
+        {/* Mobile Navigation */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm shadow-md overflow-hidden"
+            >
+              <div className="container py-4 px-4 flex flex-col space-y-4">
+                {["Características", "Beneficios", "Testimonios"].map((item) => (
+                  <Link
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    className="text-base font-medium py-2 hover:text-violet-600 transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const section = document.getElementById(item.toLowerCase());
+                      if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                        setMobileMenuOpen(false);
+                      }
+                    }}
+                  >
+                    {item}
+                  </Link>
+                ))}
+                <div className="pt-2">
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="w-full bg-gradient-to-r from-violet-500 to-purple-600"
+                    onClick={() => {
+                      openDemoModal();
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.header>
 
       <main className="relative">
@@ -881,6 +977,7 @@ export default function LandingPage() {
                         width={180}
                         height={60}
                         className="h-14 w-auto object-contain transition-all duration-300 group-hover:scale-110"
+                        loading="lazy"
                       />
                     </div>
                     <div className="absolute -inset-px -z-10 rounded-lg bg-gradient-to-r from-violet-500 to-purple-600 opacity-0 blur-sm transition-all duration-300 group-hover:opacity-70" />
@@ -1022,6 +1119,7 @@ export default function LandingPage() {
                   width={1200}
                   height={600}
                   className="h-full w-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -1079,6 +1177,7 @@ export default function LandingPage() {
                     width={800}
                     height={600}
                     className="h-full w-full object-cover object-center"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-4 left-4 rounded-lg bg-white/90 px-3 py-1 text-sm font-medium text-violet-800 backdrop-blur-sm dark:bg-black/50 dark:text-violet-300">
