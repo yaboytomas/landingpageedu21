@@ -33,6 +33,7 @@ import { CursorFollower } from "@/components/cursor-follower"
 import { ScrollProgress } from "@/components/scroll-progress"
 import { useAudio } from "@/hooks/use-audio"
 import { useMobile } from "@/hooks/use-mobile"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 // Laptop image component
 const LaptopImage = () => (
@@ -673,8 +674,13 @@ export default function LandingPage() {
       <DemoRequestModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
 
       {/* Header */}
-      <header
-        className={`fixed top-0 z-50 w-full transition-all duration-500 ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-md dark:bg-gray-950/80" : "bg-transparent"}`}
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className={`fixed left-0 right-0 top-0 z-40 transition-all duration-300 ${
+          isScrolled ? "bg-white/80 shadow-md backdrop-blur dark:bg-gray-950/80" : "bg-transparent"
+        }`}
       >
         <div className="container flex h-16 items-center justify-between px-4 md:px-6">
           <motion.div
@@ -714,17 +720,20 @@ export default function LandingPage() {
             ))}
           </nav>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <AnimatedButton size="sm" onClick={openDemoModal}>
-              Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
-            </AnimatedButton>
-          </motion.div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <AnimatedButton size="sm" onClick={openDemoModal}>
+                Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
+              </AnimatedButton>
+            </motion.div>
+          </div>
         </div>
-      </header>
+      </motion.header>
 
       <main className="relative">
         {/* Hero Section */}
