@@ -37,8 +37,19 @@ import { ScrollProgress } from "@/components/scroll-progress"
 import { useMobile } from "@/hooks/use-mobile"
 import { ThemeToggle } from "@/components/theme-toggle"
 
-// Global CSS helper for motion optimization
-const mobileOptimizedClass = "transition-colors duration-300 active:text-violet-600 active:scale-[0.98]";
+// Global CSS for performance optimization
+const mobileOptimizedClass = "transition-colors active:text-violet-600";
+
+// Add new global style for reduced motion on mobile
+const globalStyles = `
+.reduce-motion * {
+  transition-duration: 0.1s !important;
+  animation-duration: 0.1s !important;
+  transition-delay: 0s !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+}
+`;
 
 // Laptop image component
 const LaptopImage = () => (
@@ -71,12 +82,6 @@ const AnimatedCard = ({ icon: Icon, title, description, delay = 0, items = [] })
         setHovered(true)
       }}
       onHoverEnd={() => setHovered(false)}
-      onTapStart={() => {
-        if (isMobileDevice) setHovered(true)
-      }}
-      onTap={() => {
-        if (isMobileDevice) setTimeout(() => setHovered(false), 1000)
-      }}
     >
       <div className="absolute -right-10 -top-10 z-0 h-24 w-24 rounded-full bg-violet-500/20 transition-all duration-500 group-hover:scale-[2.5] group-hover:bg-violet-500/30" />
 
@@ -159,12 +164,6 @@ const TestimonialCard = ({ name, role, content, initials, delay = 0 }) => {
         setHovered(true)
       }}
       onHoverEnd={() => setHovered(false)}
-      onTapStart={() => {
-        if (isMobileDevice) setHovered(true)
-      }}
-      onTap={() => {
-        if (isMobileDevice) setTimeout(() => setHovered(false), 1000)
-      }}
     >
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-purple-600/5 opacity-0"
@@ -645,81 +644,55 @@ export default function LandingPage() {
 
   // Optimize page performance based on device type
   useEffect(() => {
-    // Check if the page needs to be optimized for mobile
+    // Only apply performance optimizations on mobile
     if (isMobile) {
-      // Set a reduced motion preference for the whole page
-      document.documentElement.style.setProperty('--motion-reduce', 'reduce');
-    } else {
-      document.documentElement.style.setProperty('--motion-reduce', 'no-preference');
+      // Add class to reduce motion
+      document.documentElement.classList.add('reduce-motion');
+      
+      // Use passive event listeners for all touch events
+      const passiveOption = { passive: true };
+      document.addEventListener('touchstart', () => {}, passiveOption);
+      document.addEventListener('touchmove', () => {}, passiveOption);
     }
   }, [isMobile]);
 
-  // Mobile-optimized smooth scroll function
-  const smoothScrollTo = (elementId) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      // Use requestAnimationFrame for smoother scrolling on all devices
-      const targetPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      const startPosition = window.pageYOffset;
-      const distance = targetPosition - startPosition;
-      
-      // Use simpler animation for mobile
-      if (isMobile) {
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'auto'
-        });
-      } else {
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
-      }
-    }
-  };
-
-  // Handle scroll events with throttling for better performance
+  // Simplified scroll handler without throttling
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-      setShowBackToTop(window.scrollY > 500);
+      // Use requestAnimationFrame for better performance
+      requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 50);
+        setShowBackToTop(window.scrollY > 500);
+      });
     };
 
-    // Add throttling to scroll event
-    let timeout;
-    const throttledHandleScroll = () => {
-      if (!timeout) {
-        timeout = setTimeout(() => {
-          handleScroll();
-          timeout = null;
-        }, 100); // Only process scroll events every 100ms
-      }
-    };
-
-    window.addEventListener("scroll", throttledHandleScroll);
-    return () => {
-      window.removeEventListener("scroll", throttledHandleScroll);
-      clearTimeout(timeout);
-    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
-    if (isMobile) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      });
-    } else {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
+    window.scrollTo({
+      top: 0,
+      behavior: isMobile ? 'auto' : 'smooth'
+    });
   };
 
   const openDemoModal = () => setDemoModalOpen(true)
 
   const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
+
+  // Add styles to document head
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const styleElement = document.createElement('style');
+      styleElement.innerHTML = globalStyles;
+      document.head.appendChild(styleElement);
+      
+      return () => {
+        document.head.removeChild(styleElement);
+      };
+    }
+  }, []);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-white to-violet-50 dark:from-gray-950 dark:to-black">
@@ -748,7 +721,7 @@ export default function LandingPage() {
         <div className="absolute left-[40%] top-[40%] h-[400px] w-[400px] rounded-full bg-blue-300/20 blur-3xl dark:bg-blue-900/20" />
 
         {/* Animated particles */}
-        <Particles className="absolute inset-0 z-0" quantity={100} color="#8B5CF6" speed={0.5} />
+        <Particles className="absolute inset-0 z-0" quantity={isMobile ? 30 : 100} color="#8B5CF6" speed={0.5} />
       </div>
 
       {/* Video Modal */}
@@ -803,7 +776,10 @@ export default function LandingPage() {
                   className={`group relative text-sm font-medium transition-colors hover:text-violet-600 ${mobileOptimizedClass}`}
                   onClick={(e) => {
                     e.preventDefault();
-                    smoothScrollTo(item.id);
+                    const section = document.getElementById(item.id);
+                    if (section) {
+                      section.scrollIntoView({ behavior: isMobile ? 'auto' : 'smooth' });
+                    }
                   }}
                 >
                   {item.label}
@@ -863,7 +839,10 @@ export default function LandingPage() {
                       e.preventDefault();
                       setMobileMenuOpen(false);
                       setTimeout(() => {
-                        smoothScrollTo(item.id);
+                        const section = document.getElementById(item.id);
+                        if (section) {
+                          section.scrollIntoView({ behavior: isMobile ? 'auto' : 'smooth' });
+                        }
                       }, 50);
                     }}
                   >
