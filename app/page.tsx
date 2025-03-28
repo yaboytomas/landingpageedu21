@@ -9,6 +9,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useTheme } from "next-themes"
 import {
   School,
   BarChart,
@@ -633,14 +634,21 @@ export default function LandingPage() {
   const [demoModalOpen, setDemoModalOpen] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { scrollYProgress } = useScroll()
+  const { scrollY } = useScroll()
   const heroRef = useRef(null)
   const featuresRef = useRef(null)
   const isMobile = useMobile()
+  const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
+  // Handle mounting for theme
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
   // Parallax effect for hero section
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, -150])
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const y = useTransform(scrollY, [0, 500], [0, -150])
+  const opacity = useTransform(scrollY, [0, 300], [1, 0])
 
   // Optimize page performance based on device type
   useEffect(() => {
@@ -748,7 +756,7 @@ export default function LandingPage() {
           >
             <Link href="/" className="flex items-center">
               <Image
-                src="/logo.png"
+                src={mounted && theme === "dark" ? "/logo2.png" : "/logo.png"}
                 alt="EDU21 Logo"
                 width={160}
                 height={160}
