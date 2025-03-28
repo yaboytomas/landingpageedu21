@@ -755,14 +755,18 @@ export default function LandingPage() {
             className="flex items-center gap-2"
           >
             <Link href="/" className="flex items-center">
-              <Image
-                src={mounted && theme === "dark" ? "/logo2.png" : "/logo.png"}
-                alt="EDU21 Logo"
-                width={160}
-                height={160}
-                className="h-auto w-40 object-contain"
-                priority
-              />
+              {!mounted ? (
+                <div className="h-auto w-40"></div>
+              ) : (
+                <Image
+                  src={theme === "dark" ? "/logo2.png" : "/logo.png"}
+                  alt="EDU21 Logo"
+                  width={160}
+                  height={160}
+                  className="h-auto w-40 object-contain"
+                  priority
+                />
+              )}
             </Link>
           </motion.div>
 
