@@ -891,7 +891,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="flex flex-col justify-center space-y-4 mx-auto text-center lg:text-left lg:mx-0"
+                className="flex flex-col justify-center space-y-4 mx-auto text-center"
               >
                 <div className="space-y-2">
                   <motion.div
@@ -914,7 +914,7 @@ export default function LandingPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.8 }}
-                    className="max-w-[600px] text-lg text-muted-foreground md:text-xl mx-auto lg:mx-0"
+                    className="max-w-[600px] text-lg text-muted-foreground md:text-xl mx-auto"
                   >
                     Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.
                     Optimice procesos, mejore la comunicación y eleve la experiencia educativa.
@@ -925,7 +925,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
-                  className="flex flex-col gap-3 sm:flex-row justify-center lg:justify-center"
+                  className="flex flex-col gap-3 sm:flex-row justify-center"
                 >
                   <div className="flex justify-center">
                     <AnimatedButton size="lg" className="group flex items-center justify-center" onClick={openDemoModal}>
@@ -938,7 +938,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.8 }}
-                  className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground justify-center lg:justify-start"
+                  className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground justify-center"
                 >
                   {[
                     { icon: Zap, text: "Implementación rápida" },
