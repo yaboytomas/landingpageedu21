@@ -8,6 +8,11 @@ import StructuredData from "@/components/structured-data"
 
 const inter = Inter({ subsets: ["latin"] })
 
+// Use logo.png instead of favicon.png for better image size and quality
+const siteUrl = "https://software.edu21.cl";
+const imagePath = "/logo.png";
+const imageUrl = `${siteUrl}${imagePath}`;
+
 export const metadata: Metadata = {
   title: "EDU21 - Software Educativo de Última Generación",
   description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
@@ -16,15 +21,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: "EDU21 - Software Educativo de Última Generación",
     description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
-    url: "https://software.edu21.cl",
+    url: siteUrl,
     siteName: "EDU21",
     locale: "es_ES",
     type: "website",
     images: [
       {
-        url: "/favicon.png",
-        width: 512,
-        height: 512,
+        url: imageUrl,
+        width: 400,
+        height: 400,
         alt: "EDU21 Logo",
       }
     ],
@@ -33,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "EDU21 - Software Educativo de Última Generación",
     description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
-    images: ["/favicon.png"],
+    images: [imageUrl],
   },
   icons: {
     icon: [
@@ -55,14 +60,19 @@ export default function RootLayout({
         {metadata.title && <meta property="og:title" content={metadata.title.toString()} />}
         {metadata.description && <meta property="og:description" content={metadata.description.toString()} />}
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="/favicon.png" />
+        <meta property="og:url" content={siteUrl} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:image:width" content="400" />
+        <meta property="og:image:height" content="400" />
+        <meta property="og:image:type" content="image/png" />
         <meta name="twitter:card" content="summary_large_image" />
         {metadata.title && <meta name="twitter:title" content={metadata.title.toString()} />}
         {metadata.description && <meta name="twitter:description" content={metadata.description.toString()} />}
-        <meta name="twitter:image" content="/favicon.png" />
+        <meta name="twitter:image" content={imageUrl} />
         <link rel="icon" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
         <link rel="shortcut icon" href="/favicon.png" />
+        <link rel="image_src" href={imageUrl} />
         <meta name="theme-color" content="#8B5CF6" />
         <StructuredData />
         
