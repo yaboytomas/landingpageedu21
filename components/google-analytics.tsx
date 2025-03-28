@@ -1,8 +1,8 @@
 'use client'
 
 import Script from 'next/script'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { analytics } from '@/config/analytics'
 
 // Get GA4 ID from config
@@ -17,7 +17,12 @@ declare global {
 
 export default function GoogleAnalytics() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const [searchParams, setSearchParams] = useState('')
+  
+  // Get search params on client-side only
+  useEffect(() => {
+    setSearchParams(window.location.search)
+  }, [pathname])
 
   useEffect(() => {
     // Skip if GA4 ID is not defined or in development
@@ -26,11 +31,13 @@ export default function GoogleAnalytics() {
     }
 
     // Send pageview when route changes
-    const url = pathname + searchParams.toString()
+    const url = pathname + searchParams
     
-    window.gtag('config', GA4_ID, {
-      page_path: url,
-    })
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('config', GA4_ID, {
+        page_path: url,
+      })
+    }
   }, [pathname, searchParams])
 
   // Skip if GA4 ID is not defined or in development
