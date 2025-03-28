@@ -29,6 +29,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
-    // Add more URLs for any other pages in your application
+    {
+      url: `${baseUrl}/gracias-solicitud-demo`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
   ]
 } 

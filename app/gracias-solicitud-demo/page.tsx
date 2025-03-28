@@ -169,7 +169,7 @@ export default function GraciasSolicitudDemo() {
               
               {/* WhatsApp - With actual logo */}
               <a 
-                href={process.env.NEXT_PUBLIC_WHATSAPP_URL || "https://wa.me/56948504588"}
+                href={process.env.NEXT_PUBLIC_WHATSAPP_URL || "https://wa.me/56948504588?text=Hola%20me%20interesan%20los%20servicios%20de%20Edu21.cl!"}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-lg bg-[#25D366] px-4 py-2 text-white transition-transform hover:scale-105"
