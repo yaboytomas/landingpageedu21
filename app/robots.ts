@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/admin/'],
     },
-    sitemap: 'https://edu21.vercel.app/sitemap.xml',
+    sitemap: 'https://software.edu21.cl/sitemap.xml',
   }
 } 

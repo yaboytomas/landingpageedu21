@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://edu21.vercel.app'
+  const baseUrl = 'https://software.edu21.cl'
   const lastModified = new Date()
 
   return [
@@ -12,19 +12,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${baseUrl}/#características`,
+      url: `${baseUrl}/caracteristicas`,
       lastModified,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/#beneficios`,
+      url: `${baseUrl}/beneficios`,
       lastModified,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/#testimonios`,
+      url: `${baseUrl}/testimonios`,
       lastModified,
       changeFrequency: 'monthly',
       priority: 0.8,

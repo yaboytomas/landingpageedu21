@@ -7,8 +7,8 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "EDU21",
-    "url": "https://edu21.vercel.app",
-    "logo": "https://edu21.vercel.app/logo.png",
+    "url": "https://software.edu21.cl",
+    "logo": "https://software.edu21.cl/logo.png",
     "description": "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
     "sameAs": [
       "https://facebook.com/edu21software",
@@ -29,8 +29,8 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "SoftwareCompany",
     "name": "EDU21 Software Educativo",
-    "image": "https://edu21.vercel.app/hero.jpg",
-    "url": "https://edu21.vercel.app",
+    "image": "https://software.edu21.cl/hero.jpg",
+    "url": "https://software.edu21.cl",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Av. Providencia 1234",
@@ -85,7 +85,7 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "EDU21 Software Educativo",
-    "image": "https://edu21.vercel.app/logo.png",
+    "image": "https://software.edu21.cl/logo.png",
     "description": "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
     "brand": {
       "@type": "Brand",
@@ -187,14 +187,14 @@ export default function StructuredData() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "url": "https://edu21.vercel.app",
+    "url": "https://software.edu21.cl",
     "name": "EDU21 - Software Educativo",
     "description": "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://edu21.vercel.app/search?q={search_term_string}"
+        "urlTemplate": "https://software.edu21.cl/search?q={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     }
@@ -209,25 +209,25 @@ export default function StructuredData() {
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": "https://edu21.vercel.app"
+        "item": "https://software.edu21.cl"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Características",
-        "item": "https://edu21.vercel.app/#características"
+        "item": "https://software.edu21.cl/caracteristicas"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "Beneficios",
-        "item": "https://edu21.vercel.app/#beneficios"
+        "item": "https://software.edu21.cl/beneficios"
       },
       {
         "@type": "ListItem",
         "position": 4,
         "name": "Testimonios",
-        "item": "https://edu21.vercel.app/#testimonios"
+        "item": "https://software.edu21.cl/testimonios"
       }
     ]
   };
@@ -238,10 +238,10 @@ export default function StructuredData() {
     "@type": "VideoObject",
     "name": "Demo de EDU21 Software Educativo",
     "description": "Video demostrativo de las funcionalidades principales de la plataforma EDU21 para instituciones educativas.",
-    "thumbnailUrl": "https://edu21.vercel.app/hero.jpg",
+    "thumbnailUrl": "https://software.edu21.cl/hero.jpg",
     "uploadDate": "2023-06-15T08:00:00+08:00",
     "duration": "PT1M33S",
-    "contentUrl": "https://edu21.vercel.app/demo-video.mp4",
+    "contentUrl": "https://software.edu21.cl/demo-video.mp4",
     "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
     "interactionStatistic": {
       "@type": "InteractionCounter",
@@ -256,12 +256,12 @@ export default function StructuredData() {
     "@type": "ImageGallery",
     "name": "EDU21 Software Educativo - Galería de imágenes",
     "image": [
-      "https://edu21.vercel.app/hero.jpg",
-      "https://edu21.vercel.app/school1.jpg",
-      "https://edu21.vercel.app/school2.jpg",
-      "https://edu21.vercel.app/school3.jpg",
-      "https://edu21.vercel.app/school4.jpg",
-      "https://edu21.vercel.app/school5.jpg"
+      "https://software.edu21.cl/hero.jpg",
+      "https://software.edu21.cl/school1.jpg",
+      "https://software.edu21.cl/school2.jpg",
+      "https://software.edu21.cl/school3.jpg",
+      "https://software.edu21.cl/school4.jpg",
+      "https://software.edu21.cl/school5.jpg"
     ]
   };
 
