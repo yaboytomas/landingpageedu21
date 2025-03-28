@@ -20,11 +20,26 @@ export const metadata: Metadata = {
     siteName: "EDU21",
     locale: "es_ES",
     type: "website",
+    images: [
+      {
+        url: "/favicon.png",
+        width: 512,
+        height: 512,
+        alt: "EDU21 Logo",
+      }
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "EDU21 - Software Educativo de Última Generación",
     description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
+    images: ["/favicon.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.png" }
+    ],
+    apple: "/favicon.png",
   }
 }
 
@@ -40,11 +55,15 @@ export default function RootLayout({
         {metadata.title && <meta property="og:title" content={metadata.title.toString()} />}
         {metadata.description && <meta property="og:description" content={metadata.description.toString()} />}
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="/favicon.png" />
         <meta name="twitter:card" content="summary_large_image" />
         {metadata.title && <meta name="twitter:title" content={metadata.title.toString()} />}
         {metadata.description && <meta name="twitter:description" content={metadata.description.toString()} />}
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="twitter:image" content="/favicon.png" />
+        <link rel="icon" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="shortcut icon" href="/favicon.png" />
+        <meta name="theme-color" content="#8B5CF6" />
         <StructuredData />
         
         {/* Google Tag Manager - DIRECT IMPLEMENTATION */}

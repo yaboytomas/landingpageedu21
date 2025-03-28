@@ -807,7 +807,7 @@ export default function LandingPage() {
               className="hidden sm:block"
             >
               <AnimatedButton size="sm" onClick={openDemoModal}>
-                Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
+                Solicitar Demo
               </AnimatedButton>
             </motion.div>
             
@@ -868,7 +868,7 @@ export default function LandingPage() {
                       setMobileMenuOpen(false);
                     }}
                   >
-                    Solicitar Demo <ArrowRight className="ml-2 h-4 w-4" />
+                    Solicitar Demo
                   </Button>
                 </div>
               </div>
@@ -928,9 +928,8 @@ export default function LandingPage() {
                   className="flex flex-col gap-3 sm:flex-row justify-center lg:justify-start"
                 >
                   <div>
-                    <AnimatedButton size="lg" className="group" onClick={openDemoModal}>
+                    <AnimatedButton size="lg" className="group flex items-center justify-center" onClick={openDemoModal}>
                       Solicitar Demo
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </AnimatedButton>
                   </div>
                 </motion.div>
@@ -1332,7 +1331,6 @@ export default function LandingPage() {
                 >
                   <AnimatedButton size="lg" className="mt-4" onClick={openDemoModal}>
                     Descubrir más beneficios
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </AnimatedButton>
                 </motion.div>
               </motion.div>
@@ -1445,7 +1443,7 @@ export default function LandingPage() {
                   <Button 
                     variant="default" 
                     size="lg" 
-                    className={`h-12 w-60 bg-gradient-to-r from-violet-500 to-purple-600 ${mobileOptimizedClass}`}
+                    className={`h-12 w-60 bg-gradient-to-r from-violet-500 to-purple-600 flex items-center justify-center ${mobileOptimizedClass}`}
                     onClick={openDemoModal}
                   >
                     Solicitar Demo
