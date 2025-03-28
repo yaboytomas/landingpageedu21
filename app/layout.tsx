@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import StructuredData from "@/components/structured-data"
+import { GoogleTagManagerScript, GoogleTagManagerNoScript } from "@/components/google-tag-manager"
+import GoogleAnalytics from "@/components/google-analytics"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "EDU21 - Software Educativo de Última Generación",
     description: "Soluciones de software integrales diseñadas específicamente para escuelas y centros educativos.",
-    url: "https://edu21.vercel.app",
+    url: "https://software.edu21.cl",
     siteName: "EDU21",
     locale: "es_ES",
     type: "website",
@@ -46,8 +48,12 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <StructuredData />
+        <GoogleTagManagerScript />
+        <GoogleAnalytics />
       </head>
       <body className={inter.className} suppressHydrationWarning>
+        {/* Google Tag Manager (noscript) */}
+        <GoogleTagManagerNoScript />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
