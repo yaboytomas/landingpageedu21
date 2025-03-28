@@ -4,6 +4,7 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import StructuredData from "@/components/structured-data"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -36,14 +37,15 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
+        {metadata.title && <meta property="og:title" content={metadata.title.toString()} />}
+        {metadata.description && <meta property="og:description" content={metadata.description.toString()} />}
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={metadata.title} />
-        <meta name="twitter:description" content={metadata.description} />
+        {metadata.title && <meta name="twitter:title" content={metadata.title.toString()} />}
+        {metadata.description && <meta name="twitter:description" content={metadata.description.toString()} />}
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <StructuredData />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
