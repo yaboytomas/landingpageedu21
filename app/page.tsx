@@ -346,20 +346,17 @@ const DemoRequestModal = ({ isOpen, onClose }) => {
         throw new Error(data.message || 'Error al enviar la solicitud')
       }
       
+      // Set success and redirect to thank you page
       setIsSuccess(true)
       
-      // Reset form after success
+      // Close modal and redirect after a short delay
       setTimeout(() => {
-        setIsSuccess(false)
         onClose()
-        setFormData({
-          nombre: "",
-          escuela: "",
-          numero: "",
-          correo: "",
-          mensaje: ""
-        })
-      }, 3000)
+        // Use a relative URL instead of an absolute URL to avoid 404 errors
+        // when running locally or in different environments
+        window.location.href = '/gracias-solicitud-demo'
+      }, 1000)
+      
     } catch (err) {
       console.error('Error submitting form:', err)
       setError(err.message || 'Error al enviar la solicitud. Intente de nuevo.')
