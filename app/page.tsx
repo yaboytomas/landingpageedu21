@@ -925,9 +925,9 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
-                  className="flex flex-col gap-3 sm:flex-row justify-center lg:justify-start"
+                  className="flex flex-col gap-3 sm:flex-row justify-center lg:justify-center"
                 >
-                  <div>
+                  <div className="flex justify-center">
                     <AnimatedButton size="lg" className="group flex items-center justify-center" onClick={openDemoModal}>
                       Solicitar Demo
                     </AnimatedButton>
